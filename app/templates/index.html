@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+	<h1>Welcome to Test Website</h1>
+  {% if users %}
+	  {% for user in users %}
+	    <div>
+	      Name: {{user.name}}<br>
+	      Ph No: {{user.number}}
+	    </div>
+    {% endfor %}
+  {% else %}
+  <div>
+    <p>No user's to display.</p>
+  </div>
+  {% endif %}
+{% endblock %}

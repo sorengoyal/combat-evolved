@@ -1,0 +1,1 @@
+export PL_API_KEY=db945b0b15344448b5252cb143c78f5d
