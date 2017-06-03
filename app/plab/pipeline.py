@@ -18,7 +18,7 @@ import rasterio
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-
+import numpy as np
 API_KEY='3d42933f4c284a3b8dd2c5200e97da00'
 
 #%%
@@ -121,7 +121,8 @@ def getAllTiffs(filters):
             print('(getAllTiff)Sucess:Asset[' + str(i) + '] has been activated')
         else:
             print('(getAllTiff)Error:Response ' + str(response))
-    downloaded = [False, False, False, False] 
+    downloaded = [False, False, False, False]
+    tiffs = [0,0,0,0]
     while(not downloaded[0] and not downloaded[1] and not downloaded[2] and not downloaded[3] ):
         for i in range(0,4):
             result = requests.get(assets[i],
@@ -134,9 +135,10 @@ def getAllTiffs(filters):
                 err = gdal.Warp(output_file, vsicurl_url, dstSRS = 'EPSG:4326', cutlineDSName = 'subarea.json', cropToCutline = True)
                 print("(getAllTiff)Sucess: Downloaded image of subarea:" + output_file)
                 downloaded[i] = True
+                tiffs[i] = err.ReadAsArray()
             else:
-                print('(getAllTiff)Message: Asset[' + str(i) + '] is ' + response.json()['status'])
-                
+                print('(getAllTiff) Message: Asset[' + str(i) + '] is ' + result['analytic']['status'])
+    return tiffs
 #%% 
 def createFilters(coordinates):
     geometry_filter = {
@@ -332,9 +334,11 @@ def planetGetAssets(fil):
                         json=search_request)    
     res_json = res.json()
     #TODO: Extend the search for the relavant AOI for all pages
+    result = {}
     for item in res_json['features']:
         if(len(item['_permissions']) != 0 ):
             result = item
+            break
     return result
 #%%
 '''This method will take coordinates as  
@@ -366,16 +370,74 @@ coordinates = {
     ]
 }
 '''
+def computeNDVI(tiff):
+    tiff = tiff.astype(int)
+    ndvi = np.empty((tiff.shape[1], tiff.shape[2]),dtype = float)
+    for i in range(0,tiff.shape[1]):
+        for j in range(0,tiff.shape[2]):
+            if(tiff[4,i,j] + tiff[2,i,j] == 0):
+                ndvi[i,j] = 0
+            else:
+                ndvi[i,j] = (tiff[4,i,j] - tiff[2,i,j])/(tiff[4,i,j] + tiff[2,i,j])
+    #plt.imshow(ndvi)
+    total = 0
+    count = 0
+    for i in range(0,ndvi.shape[0]):
+        for j in range(0,tiff.shape[1]):
+            if(ndvi[i,j] != 0):
+                total = total + ndvi[i,j] 
+                count = count + 1
+    return total/count
 def computeGreenCoverGraph(coordinates):
-    filters = createFilter(coordinates)
+    filters = createFilters(coordinates)
     for i in range(0,4):
         res = planetGetStats(filters[i])
         if(len(res["buckets"]) == 0):
-            return [-1,
-                    "Insufficient data: No images for filter["+ str(i) + "]",
-                    filter[i]
-                    ]
-    assets = []
-
-filters = createFilters(coordinates)        
-getAllTiffs(filters)
+            print("(computeGreenCoverGraph)Error: No images for filter["+ str(i) + "]")
+        else:
+            print("(computeGreenCoverGraph)Sucess: Found images for filter["+ str(i) + "]")
+    tiffs = getAllTiffs(filters)
+    ndvi = []
+    labels = []
+    seasons = ['Spring', 'Summer','Fall', 'Winter']
+    current_season = getCurrentSeason(int(time.strftime('%m')))
+    for i in range(0,4):
+        ndvi.append(computeNDVI(tiffs[(current_season + i)%4]))
+        labels.append(seasons[(current_season + i)%4])
+        print("(computeGreenCoverGraph)Sucess: Computed NDVI for " + labels[i])
+    plt.plot(ndvi)
+    print(labels)
+#%%
+coordinates = {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -122.958984375,
+              41.410290812880795
+            ],
+            [
+              -122.9381275177002,
+              41.410290812880795
+            ],
+            [
+              -122.9381275177002,
+              41.42245604850197
+            ],
+            [
+              -122.958984375,
+              41.42245604850197
+            ],
+            [
+              -122.958984375,
+              41.410290812880795
+            ]
+          ]
+        ]
+      }
+#%%
+#filters = createFilters(coordinates)
+#%%
+#tiffs = getAllTiffs(filters)
+#%%
+computeGreenCoverGraph(coordinates)
