@@ -109,12 +109,12 @@ function initMap() {
     
     //Constructor: Creates a new map. Only zoom and corrdinates a required
     map = new google.maps.Map(document.getElementById('map'),{
-            center: {lat:40.7413549, lng: -73.9980244},
+            center: {lat:37.805749114187385, lng: -122.4270486831665,},
             zoom: 13,
             styles: style
     });
     
-    var center = {lat:40.7413549, lng: -73.9980244};
+    //var center = {lat:40.7413549, lng: -73.9980244};
     
     
     drawingManager = new google.maps.drawing.DrawingManager({
@@ -174,6 +174,22 @@ function sendPolygon(polygon) {
     console.log(data)
     xhr.send(data);
 }
+/*
+var imageMapType = new google.maps.ImageMapType({
+    getTileUrl: function(coord, zoom) {
+    if (zoom < 17 || zoom > 20 ||
+        bounds[zoom][0][0] > coord.x || coord.x > bounds[zoom][0][1] ||
+        bounds[zoom][1][0] > coord.y || coord.y > bounds[zoom][1][1]) {
+          return null;
+        }
 
+    return ['overlay.png',
+            zoom, '_', coord.x, '_', coord.y, '.png'].join('');
+      },
+      tileSize: new google.maps.Size(256, 256)
+    });
 
+    map.overlayMapTypes.push(imageMapType);
+}
+*/
 

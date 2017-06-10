@@ -7,9 +7,9 @@ Created on Sat Jun  3 22:11:16 2017
 """
 
 import unittest
-from plab.server import Server
-from plab.geospatial import Geospatial
-from tests.filters import posFilter, negFilter, coordinates
+from app.plab.server import Server
+from app.plab.geospatial import Geospatial
+from app.tests.filters import posFilter, negFilter, coordinates
 import numpy as np
 
 class TestGeospatial(unittest.TestCase):
@@ -27,14 +27,14 @@ class TestGeospatial(unittest.TestCase):
             self.assertTrue(len(fil['config']) == 3)
     
     #@unittest.skip("Remove this whenever this is read")        
-    def test_getImage(self):
+    def test_getImages(self):
         with self.assertRaises(AssertionError):
-            self.geospatial.getImage(posFilter)
-        image = self.geospatial.getImage([posFilter])
+            self.geospatial.getImages(posFilter)
+        image = self.geospatial.getImages([posFilter])
         self.assertTrue(len(image) != 0)
         self.assertTrue(image[0].shape[0] != 0)
         with self.assertRaises(Exception):
-            self.geospatial.getImage([negFilter])
+            self.geospatial.getImages([negFilter])
     
     def test_computeNDVI(self):
         mat = np.zeros([5,2,2], dtype = int)

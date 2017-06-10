@@ -7,8 +7,8 @@ Created on Thu Jun  1 19:32:56 2017
 """
 
 import unittest
-from plab.server import Server
-from tests.filters import posFilter, negFilter, coordinates
+from app.plab.server import Server
+from app.tests.filters import posFilter, negFilter, coordinates
 
 class TestServerMethods(unittest.TestCase):
     def setUp(self):
@@ -97,35 +97,39 @@ class TestServerMethods(unittest.TestCase):
         
     def test_postActivationRequest(self):
         asset = {
-            "_permissions": [
-              "download"
-            ],
-            "type": "analytic",
             "_links": {
-              "_self": "https://api.planet.com/data/v1/assets/eyJpIjogIjIwMTYwNTMwXzE5MzkwNF8xMDU2MzE4X1JhcGlkRXllLTIiLCAiYyI6ICJSRU9ydGhvVGlsZSIsICJ0IjogImFuYWx5dGljIiwgImN0IjogIml0ZW0tdHlwZSJ9",
-              "type": "https://api.planet.com/data/v1/asset-types/analytic",
-              "activate": "https://api.planet.com/data/v1/assets/eyJpIjogIjIwMTYwNTMwXzE5MzkwNF8xMDU2MzE4X1JhcGlkRXllLTIiLCAiYyI6ICJSRU9ydGhvVGlsZSIsICJ0IjogImFuYWx5dGljIiwgImN0IjogIml0ZW0tdHlwZSJ9/activate"
+                "activate": "https://api.planet.com/data/v1/assets/eyJpIjogIjIwMTcwNTE5XzE5MTUxNV8xMDU2MzE4X1JhcGlkRXllLTQiLCAiYyI6ICJSRU9ydGhvVGlsZSIsICJ0IjogImFuYWx5dGljIiwgImN0IjogIml0ZW0tdHlwZSJ9/activate",
+                "type": "https://api.planet.com/data/v1/asset-types/analytic",
+                "_self": "https://api.planet.com/data/v1/assets/eyJpIjogIjIwMTcwNTE5XzE5MTUxNV8xMDU2MzE4X1JhcGlkRXllLTQiLCAiYyI6ICJSRU9ydGhvVGlsZSIsICJ0IjogImFuYWx5dGljIiwgImN0IjogIml0ZW0tdHlwZSJ9"
             },
-            "md5_digest": '',
-            "status": "inactive"
-          }
+            "type": "analytic",
+            "expires_at": "2017-06-04T18:27:40.884133",
+            "_permissions": [
+                "download"
+            ],
+            "md5_digest": "e0b913dc48aa91f6c07b30d16017f8db",
+            "location": "https://api.planet.com/data/v1/download?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvK0M3MlU4UnZxRnhHeUVXL0hKcmhWN2poNEZxM1Z3V2ZMOWVxSzBKaVlnNUNKY3hjSFFweWtMSGIxMU9DWFVKLzk3eC9sMnBBMnNzdXhia2ZxRXFIdz09IiwiaXRlbV90eXBlX2lkIjoiUkVPcnRob1RpbGUiLCJ0b2tlbl90eXBlIjoidHlwZWQtaXRlbSIsImV4cCI6MTQ5NjYwMDg2MCwiaXRlbV9pZCI6IjIwMTcwNTE5XzE5MTUxNV8xMDU2MzE4X1JhcGlkRXllLTQiLCJhc3NldF90eXBlIjoiYW5hbHl0aWMifQ._3g5cpTYzhphMTyY7tJqEkXfO6sMLNUCfkrSx7pyZRCP_2O9igytfvIh8ddyk-XptCVd1VbBzjZwDoV2tr2ZfA",
+            "status": "active"
+        }
         response = self.server.postActivationRequest(asset)
         self.assertTrue(response.status_code == 202 or response.status_code == 204)
     
     def test_getActivationStatus(self):
         asset = {
-            "_permissions": [
-              "download"
-            ],
-            "type": "analytic",
             "_links": {
-              "_self": "https://api.planet.com/data/v1/assets/eyJpIjogIjIwMTYwNTMwXzE5MzkwNF8xMDU2MzE4X1JhcGlkRXllLTIiLCAiYyI6ICJSRU9ydGhvVGlsZSIsICJ0IjogImFuYWx5dGljIiwgImN0IjogIml0ZW0tdHlwZSJ9",
-              "type": "https://api.planet.com/data/v1/asset-types/analytic",
-              "activate": "https://api.planet.com/data/v1/assets/eyJpIjogIjIwMTYwNTMwXzE5MzkwNF8xMDU2MzE4X1JhcGlkRXllLTIiLCAiYyI6ICJSRU9ydGhvVGlsZSIsICJ0IjogImFuYWx5dGljIiwgImN0IjogIml0ZW0tdHlwZSJ9/activate"
+                "activate": "https://api.planet.com/data/v1/assets/eyJpIjogIjIwMTcwNTE5XzE5MTUxNV8xMDU2MzE4X1JhcGlkRXllLTQiLCAiYyI6ICJSRU9ydGhvVGlsZSIsICJ0IjogImFuYWx5dGljIiwgImN0IjogIml0ZW0tdHlwZSJ9/activate",
+                "type": "https://api.planet.com/data/v1/asset-types/analytic",
+                "_self": "https://api.planet.com/data/v1/assets/eyJpIjogIjIwMTcwNTE5XzE5MTUxNV8xMDU2MzE4X1JhcGlkRXllLTQiLCAiYyI6ICJSRU9ydGhvVGlsZSIsICJ0IjogImFuYWx5dGljIiwgImN0IjogIml0ZW0tdHlwZSJ9"
             },
-            "md5_digest": '',
-            "status": "inactive"
-          }
+            "type": "analytic",
+            "expires_at": "2017-06-04T18:27:40.884133",
+            "_permissions": [
+                "download"
+            ],
+            "md5_digest": "e0b913dc48aa91f6c07b30d16017f8db",
+            "location": "https://api.planet.com/data/v1/download?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvK0M3MlU4UnZxRnhHeUVXL0hKcmhWN2poNEZxM1Z3V2ZMOWVxSzBKaVlnNUNKY3hjSFFweWtMSGIxMU9DWFVKLzk3eC9sMnBBMnNzdXhia2ZxRXFIdz09IiwiaXRlbV90eXBlX2lkIjoiUkVPcnRob1RpbGUiLCJ0b2tlbl90eXBlIjoidHlwZWQtaXRlbSIsImV4cCI6MTQ5NjYwMDg2MCwiaXRlbV9pZCI6IjIwMTcwNTE5XzE5MTUxNV8xMDU2MzE4X1JhcGlkRXllLTQiLCJhc3NldF90eXBlIjoiYW5hbHl0aWMifQ._3g5cpTYzhphMTyY7tJqEkXfO6sMLNUCfkrSx7pyZRCP_2O9igytfvIh8ddyk-XptCVd1VbBzjZwDoV2tr2ZfA",
+            "status": "active"
+        }
         response = self.server.getActivationStatus(asset)
         self.assertTrue(response == 'activating' or response == 'active')
     
