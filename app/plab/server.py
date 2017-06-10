@@ -5,6 +5,7 @@ Created on Thu Jun  1 18:35:17 2017
 
 @author: sogoyal
 """
+import logging
 import os
 import requests
 import json
@@ -13,6 +14,7 @@ from osgeo import gdal
 
 class Server:
     def __init__(self, api_key):
+        self.logger = logging.getLogger("root."+ __name__)
         self.API_KEY = api_key
         self.session = requests.Session()
         self.session.auth = (self.API_KEY, '')
@@ -28,7 +30,11 @@ class Server:
         }
         result = self.session.post('https://api.planet.com/data/v1/stats',
             json=stats_request)
-        return result.json()['buckets']
+        self.logger.info("postStatsRequest Code(" + str(result.status_code) + ")" + result.reason)
+        if(result.status_code == 200):
+            return result.json()['buckets']
+        else:
+            return []
     
     '''
     Returns a list of items
@@ -40,7 +46,9 @@ class Server:
             "filter": filters
         }
         res = self.session.post('https://api.planet.com/data/v1/quick-search',
-                            json=search_request)    
+                            json=search_request)  
+        self.logger.debug('postSearchRequest PostJSON:' + json.dumps(filters, indent=2))
+        self.logger.debug('postSearchRequest Result:' + json.dumps(res.json(), indent=2))
         return res.json()['features']
     
     '''
@@ -48,7 +56,9 @@ class Server:
     returns - a dict containing the assets' properties
     '''
     def getAllAssets(self, item):
+        self.logger.debug("getAllAssets Get:" + item['_links']['assets'])
         assets = self.session.get(item['_links']['assets'])
+        self.logger.debug("getAllAssets Response:" + json.dumps(assets.json(), indent=2))
         return assets.json()
 
     '''
@@ -56,14 +66,18 @@ class Server:
     Returns  -  response.status_code == 204 => activation requested posted, 202 => activation successful
     '''
     def postActivationRequest(self, asset):
+        self.logger.debug("postActivationRequest Post:" + asset['_links']['activate'])
         response = self.session.post(asset['_links']['activate'])
+        self.logger.debug("postActivationRequest Response:" + str(response.status_code))
         return response
     
     '''
     Returns - a string 'Inactive', 'Activating', or 'Active'
     '''
     def getActivationStatus(self, asset):
+        self.logger.debug("getActivationStatus GET:" + asset['_links']['_self'])        
         response = self.session.get(asset['_links']['_self'])
+        self.logger.debug("getActivationStatus Response:" + response.json()['status'])        
         return response.json()['status']
   
     #TODO:Complete this and write a test for this method
@@ -71,6 +85,7 @@ class Server:
         download_url = asset['location']
         if(aoi == None):
             #do nothing for now
+            self.logger.error("downloadImage No Aoi Given")
             return np.empty([0,0,0])
         else:
             with open('subarea.json','w') as file:

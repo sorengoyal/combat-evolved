@@ -5,7 +5,7 @@ Created on Sat Jun  3 11:48:27 2017
 
 @author: sogoyal
 """
-
+import logging
 import os
 import requests
 
@@ -16,12 +16,14 @@ import time
 from osgeo import gdal
 import rasterio
 import numpy as np
-from plab.server import Server
+import matplotlib.pyplot as plt
+from app.plab.server import Server
 
 class Geospatial:
     def __init__(self, api_key):
         self.server = Server(api_key)
         self.seasonOrder = []
+        self.logger = logging.getLogger("root."+ __name__)
         
     def checkExistence(self, fil):
         result = self.server.postStatsRequest(fil)
@@ -32,13 +34,18 @@ class Geospatial:
         for item in result:
             if(len(item['_permissions']) != 0 ):
                 return True
-        
+    '''
+    The format of the coordinates should be (longitude, latitude)
+    '''
     def createFilters(self, coordinates):
         
         geometry_filter = {
             "type": "GeometryFilter",
             "field_name": "geometry",
-            "config": coordinates
+            "config": {
+                "type": "Polygon",
+                "coordinates": coordinates
+                }
             }
         cloud_cover_filter = {
                 "type": "RangeFilter",
@@ -60,7 +67,7 @@ class Geospatial:
                     })
         return filters
         
-    def getImage(self, filters):
+    def getImages(self, filters):
         assert(type(filters) == type([]) )
         assets = []
         for fil in filters:
@@ -76,6 +83,7 @@ class Geospatial:
             response = self.server.postActivationRequest(asset)
             if(not(response.status_code == 204 or response.status_code == 202)):
                 raise Exception("Response Code: " + str(response.status_code) +"Could not activate asset:\n" + json.dumps(asset, indent=2))    
+        self.logger.debug("getImages Found Images for " + str(len(filters)) + " filters")
         done = False
         while(not done):
             for asset in assets:
@@ -85,11 +93,13 @@ class Geospatial:
                     break
                 else:
                     done = True
-        
+        self.logger.debug("getImages Activated Assets for " + str(len(filters)) + " filters")
         images = []
         for i in range(0, len(filters)):
+            self.logger.debug("getImages Downloaded " + str(i+1) + " images")
             coordinates = filters[i]['config'][0]['config']['coordinates']
             images.append(self.server.downloadImage(assets[0], aoi = coordinates))
+        self.logger.debug("getImages shape of image:" + str(images[0].shape))
         return images
     
     def computeNDVI(self, image):
@@ -175,6 +185,10 @@ class Geospatial:
         return filters
     #def readImageFromFile(self):
         
-    #def writeImageToFile(self):
-    
-         
+    def writeImageToFile(self, filename, image):
+        assert(len(image.shape) <= 3) #Maximum a 3D array
+        if(len(image.shape) == 3): #Maximum of 3 colors
+            image.shape[0] <=3
+        self.logger.info("writeImageToFile Image Shape " + str(image.shape))         
+        plt.imsave(fname = filename, arr = image)
+        self.logger.info("writeImageToFile Wrote file " + filename)         
