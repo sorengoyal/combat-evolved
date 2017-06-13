@@ -26,7 +26,7 @@ class TestGeospatial(unittest.TestCase):
         for fil in filters:
             self.assertTrue(len(fil['config']) == 3)
     
-    #@unittest.skip("Remove this whenever this is read")        
+    @unittest.skip("Remove this whenever this is read")        
     def test_getImages(self):
         with self.assertRaises(AssertionError):
             self.geospatial.getImages(posFilter)
@@ -38,10 +38,11 @@ class TestGeospatial(unittest.TestCase):
     
     def test_computeNDVI(self):
         mat = np.zeros([5,2,2], dtype = int)
-        mat[4,0,0] = 2
+        mat[5,0,0] = 2
         mat[2,0,0] = 1
         ndvi = self.geospatial.computeNDVI(mat)
         self.assertAlmostEqual(ndvi[0,0], (2-1)/(2+1))
+        self.assertEqual(ndvi[0,0], 0)
     
     def test_getSeason(self):
         labels = [3, 3, 3, 

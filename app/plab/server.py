@@ -82,6 +82,7 @@ class Server:
   
     #TODO:Complete this and write a test for this method
     def downloadImage(self, asset, aoi = None, output_file = None):
+        self.logger.debug("downloadImage Asset:" + json.dumps(asset,indent=2))
         download_url = asset['location']
         if(aoi == None):
             #do nothing for now

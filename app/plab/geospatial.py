@@ -96,21 +96,37 @@ class Geospatial:
         self.logger.debug("getImages Activated Assets for " + str(len(filters)) + " filters")
         images = []
         for i in range(0, len(filters)):
-            self.logger.debug("getImages Downloaded " + str(i+1) + " images")
             coordinates = filters[i]['config'][0]['config']['coordinates']
-            images.append(self.server.downloadImage(assets[0], aoi = coordinates))
+            images.append(self.server.downloadImage(assets[i], aoi = coordinates))
+            self.logger.debug("getImages Downloaded " + str(i+1) + " images")
         self.logger.debug("getImages shape of image:" + str(images[0].shape))
         return images
-    
+    '''
+    image - A minimum takes a multispectral image of shape - [bands, height*, width*]
+    For REOrthoTile
+    '''
     def computeNDVI(self, image):
         image = image.astype(int)
         ndvi = np.empty((image.shape[1], image.shape[2]),dtype = float)
+        minimum = 100
         for i in range(0,image.shape[1]):
             for j in range(0,image.shape[2]):
                 if(image[4,i,j] + image[2,i,j] == 0):
-                    ndvi[i,j] = 0
+                    ndvi[i,j] = -100 #Non-Pixel marker
                 else:
                     ndvi[i,j] = (image[4,i,j] - image[2,i,j])/(image[4,i,j] + image[2,i,j])
+                    if(minimum > ndvi[i,j]):
+                        minimum = ndvi[i,j]
+        maximum = np.max(ndvi)
+        scale = (maximum - minimum)/255.0
+        for i in range(0,image.shape[1]):
+            for j in range(0,image.shape[2]):
+                if(ndvi[i,j] == -100):
+                    ndvi[i,j] = 0 #Non-Pixel marker
+                else:
+                    ndvi[i,j] = (ndvi[i,j]+minimum)/scale
+        self.logger.debug("computeNDVI min value = " + str(minimum))
+        self.logger.debug("computeNDVI max value = " + str(maximum))
         return ndvi
 
     def getSeason(self, month):
@@ -190,5 +206,5 @@ class Geospatial:
         if(len(image.shape) == 3): #Maximum of 3 colors
             image.shape[0] <=3
         self.logger.info("writeImageToFile Image Shape " + str(image.shape))         
-        plt.imsave(fname = filename, arr = image)
+        plt.imsave(fname = filename, arr = image, cmap = plt.get_cmap('Greens'))
         self.logger.info("writeImageToFile Wrote file " + filename)         

@@ -46,6 +46,39 @@ date_range_filter = {
   }
 }
 
+winter_date_range_filter = {
+  "type": "DateRangeFilter",
+  "field_name": "acquired",
+  "config": {
+    "gte": "2016-12-01T00:00:00.000Z",
+    "lte": "2017-03-31T00:00:00.000Z"
+  }
+}
+spring_date_range_filter = {
+  "type": "DateRangeFilter",
+  "field_name": "acquired",
+  "config": {
+    "gte": "2016-04-01T00:00:00.000Z",
+    "lte": "2017-05-31T00:00:00.000Z"
+  }
+} 
+summer_date_range_filter = {
+  "type": "DateRangeFilter",
+  "field_name": "acquired",
+  "config": {
+    "gte": "2016-06-01T00:00:00.000Z",
+    "lte": "2017-08-31T00:00:00.000Z"
+  }
+}  
+fall_date_range_filter = {
+  "type": "DateRangeFilter",
+  "field_name": "acquired",
+  "config": {
+    "gte": "2016-09-01T00:00:00.000Z",
+    "lte": "2017-11-31T00:00:00.000Z"
+  }
+} 
+
 # filter any images which are more than 50% clouds
 cloud_cover_filter = {
   "type": "RangeFilter",
@@ -75,4 +108,19 @@ posFilter = {
   "config": [geometry_filter, date_range_filter, cloud_cover_filter]
 }
 
-
+winterFilter = {
+  "type": "AndFilter",
+  "config": [geometry_filter, winter_date_range_filter, cloud_cover_filter]
+}
+springPosFilter = {
+  "type": "AndFilter",
+  "config": [geometry_filter, spring_date_range_filter, cloud_cover_filter]
+}
+summerFilter = {
+  "type": "AndFilter",
+  "config": [geometry_filter, summer_date_range_filter, cloud_cover_filter]
+}
+fallPosFilter = {
+  "type": "AndFilter",
+  "config": [geometry_filter, fall_date_range_filter, cloud_cover_filter]
+}
