@@ -1,39 +1,57 @@
+<!--
+	Dimension by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
 <html>
 	<head>
-       <title>Green Monitor</title>
+		<title>Dimension by HTML5 UP</title>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="static/assets/css/main.css" /> 
-    </head>
-    
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="static/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+<!--		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript> -->
+	</head>
 	<body>
-         <!--<section id="header">
-            <header class="major">
-                <h1>Green Monitor</h1>
-                <p>Observe green cover change across the seasons<br></p>
-                <p style="font-size:50%"><a href="https://www.planet.com/gallery/chaco-boreal/"> Image: Cacho Boreal</a></p>
-            </header>
-	
-            <div class="container">
-                <ul class="actions">
-                    <li><a href="#one" class="button special scrolly">Begin</a></li>
-                </ul>
-            </div>
-        </section>
--->
-    <section id="one" class="main special">
-        <div class="container" >
-            <input id="toggle-drawing" type="button" value="Drawing Tools">
-            <h1>Maps Test</h1>
-            <div id="map" ></div>
-
+        <style>
+            #website { 
+                position: relative;
+                
+            }
+            #over_map { position: absolute; top: 60%; left: 10px; z-index: 99; }
+            #map{height: 100%;}
+        </style>
+		<!-- Wrapper -->
+       <div id="website">
+            <div id="map"></div>
             <script src = "static/assets/js/maps.js"></script>
+            <div id="over_map">
+                <header id="header">
+                    <div class="content">
+                        <div class="inner">
+                            <h1>Draw a Polygon</h1>
+                            <p></p>
+                        </div>
+                    </div>
+                </header>
+           </div>
         </div>
-       
-    </section>
-            
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key={{key}}&v=3&callback=initMap">
-    </script>
-    </body>
+        
+            <!--<div id="wrapper">
+                
+			</div>-->
+        
+		<!-- BG -->
+			<!-- <div id="bg"></div> -->
+
+		<!-- Scripts -->
+			<!--<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>-->
+            <script async defer
+                src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key={{key}}&v=3&callback=initMap">
+            </script>
+
+	</body>
 </html>
