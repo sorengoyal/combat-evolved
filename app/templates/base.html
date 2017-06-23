@@ -11,12 +11,14 @@
 		<link rel="stylesheet" href="static/assets/css/main.css" />
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 <!--		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript> -->
+        <script
+                src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key={{key}}&v=3">
+        </script>
 	</head>
 	<body>
         <style>
             #website { 
-                position: relative;
-                
+                position: relative; 
             }
             #over_map { position: absolute; top: 60%; left: 10px; z-index: 99; }
             #map{height: 100%;}
@@ -49,9 +51,7 @@
 			<script src="assets/js/skel.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>-->
-            <script async defer
-                src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key={{key}}&v=3&callback=initMap">
-            </script>
+            
 
 	</body>
 </html>

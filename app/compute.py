@@ -46,7 +46,5 @@ def ndviImages(coordinates):
     i = 1
     for image in images:
         ndvi = geo.computeNDVI(image)
-        geo.writeImageToFile("file" + str(i) + ".png", ndvi)
+        geo.writeImageToFile("app/images/file" + str(i) + ".png", ndvi)
         i = i + 1
-
-    

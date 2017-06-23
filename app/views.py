@@ -1,8 +1,13 @@
-from flask import render_template, flash, redirect, request
+from flask import render_template, flash, redirect, request, send_file, jsonify
 from app import app
-from app.plab.geospatial import Geospatial
 import json
+import logging
 import app.compute as compute
+import os
+
+logger = logging.getLogger("root."+ __name__)
+
+
 @app.route('/')
 def index():
     return render_template('base.html', key = 'AIzaSyCdlOuxf56nB-hgN35Jpvk7qm7px-8wCPA')
@@ -15,3 +20,25 @@ def receive():
     coordinates = [  pre_coordinates ] #Planet api demands a complete loop of coordinates
     compute.ndviImages(coordinates)
     return render_template('base.html', key = 'AIzaSyCdlOuxf56nB-hgN35Jpvk7qm7px-8wCPA')
+
+@app.route('/poll', methods=['GET'])
+def poll():
+    response = {"status": 0}
+    print(os.getcwd())
+    try:
+        for i in range(1,5):
+            open('app/images/file' + str(i) + '.png', 'r')
+            response["status"] = response["status"] + 25
+    except FileNotFoundError as err:
+        print(err.filename)
+        logger.info("poll(): Could not find - " + err.filename)
+    logger.debug("poll(): response sent - " + str(response["status"]))
+    return jsonify(response)
+
+@app.route('/file1.png', methods=['GET'])
+def getImage():
+#    if request.args.get('type') == '1':
+#       filename = 'ok.gif'
+#    else:
+#       filename = 'error.gif'
+    return send_file('images/file3.png', mimetype='image/png')
