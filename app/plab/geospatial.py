@@ -99,22 +99,25 @@ class Geospatial:
         for i in range(0,image.shape[1]):
             for j in range(0,image.shape[2]):
                 if(image[4,i,j] + image[2,i,j] == 0):
-                    ndvi[i,j] = -100 #Non-Pixel marker
+                    ndvi[i,j] = -100 #Non-Pixel marker\
                 else:
                     ndvi[i,j] = (image[4,i,j] - image[2,i,j])/(image[4,i,j] + image[2,i,j])
                     if(minimum > ndvi[i,j]):
                         minimum = ndvi[i,j]
         maximum = np.max(ndvi)
         scale = (maximum - minimum)/255.0
+        mask = np.ndarray(ndvi.shape)
         for i in range(0,image.shape[1]):
             for j in range(0,image.shape[2]):
                 if(ndvi[i,j] == -100):
                     ndvi[i,j] = 0 #Non-Pixel marker
+                    mask[i,j] = 0
                 else:
                     ndvi[i,j] = (ndvi[i,j]+minimum)/scale
+                    mask[i,j] = 0.8 #1 is full opaque, 0 is fully transparent
         self.logger.debug("computeNDVI min value = " + str(minimum))
         self.logger.debug("computeNDVI max value = " + str(maximum))
-        return ndvi
+        return (ndvi, mask)
 
     def getSeason(self, month):
         '''
@@ -188,10 +191,16 @@ class Geospatial:
         return filters
     #def readImageFromFile(self):
         
-    def writeImageToFile(self, filename, image):
+    def writeImageToFile(self, filename, image, mask = None):
         assert(len(image.shape) <= 3) #Maximum a 3D array
         if(len(image.shape) == 3): #Maximum of 3 colors
             image.shape[0] <=3
         self.logger.info("writeImageToFile Image Shape " + str(image.shape))         
         plt.imsave(fname = filename, arr = image, cmap = plt.get_cmap('Greens'))
+        if(mask != None):
+            image = plt.imread(filename)
+            new_image = np.ndarray(image.shape, dtype = float)
+            new_image[:,:,0:3] = image[:,:,0:3]
+            new_image[:,:,3] = image[:,:,3]*mask[:,:]
+            plt.imsave(fname = filename, arr = new_image)
         self.logger.info("writeImageToFile Wrote file " + filename)         

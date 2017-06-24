@@ -20,7 +20,7 @@ def receive():
     coordinates = [  pre_coordinates ] #Planet api demands a complete loop of coordinates
     compute.ndviImages(coordinates)
     #return render_template('base.html', key = 'AIzaSyCdlOuxf56nB-hgN35Jpvk7qm7px-8wCPA')
-    return jsonify({"Success":1})
+    return jsonify({"Message":"Downloaded Image Sucessfully"})
 
 @app.route('/poll', methods=['GET'])
 def poll():

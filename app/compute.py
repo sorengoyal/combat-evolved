@@ -42,5 +42,5 @@ def ndviImages(coordinates):
     geo = Geospatial('3d42933f4c284a3b8dd2c5200e97da00')
     filters = geo.createFilters(coordinates)
     image = geo.getImage(filters[0])
-    ndvi = geo.computeNDVI(image)
-    geo.writeImageToFile("app/images/file1.png", ndvi)
+    ndvi, mask = geo.computeNDVI(image)
+    geo.writeImageToFile("app/images/file1.png", ndvi, mask)
