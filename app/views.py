@@ -19,7 +19,8 @@ def receive():
     pre_coordinates.append(pre_coordinates[0])
     coordinates = [  pre_coordinates ] #Planet api demands a complete loop of coordinates
     compute.ndviImages(coordinates)
-    return render_template('base.html', key = 'AIzaSyCdlOuxf56nB-hgN35Jpvk7qm7px-8wCPA')
+    #return render_template('base.html', key = 'AIzaSyCdlOuxf56nB-hgN35Jpvk7qm7px-8wCPA')
+    return jsonify({"Success":1})
 
 @app.route('/poll', methods=['GET'])
 def poll():
@@ -41,4 +42,4 @@ def getImage():
 #       filename = 'ok.gif'
 #    else:
 #       filename = 'error.gif'
-    return send_file('images/file3.png', mimetype='image/png')
+    return send_file('images/file1.png', mimetype='image/png')

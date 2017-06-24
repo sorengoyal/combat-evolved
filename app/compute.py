@@ -5,7 +5,6 @@ Created on Thu Jun  8 15:41:20 2017
 
 @author: sogoyal
 """
-from app.plab.server import Server
 from app.plab.geospatial import Geospatial
 
 
@@ -42,9 +41,6 @@ Returns the 4 images of seasons with NDVI
 def ndviImages(coordinates):
     geo = Geospatial('3d42933f4c284a3b8dd2c5200e97da00')
     filters = geo.createFilters(coordinates)
-    images = geo.getImages(filters)
-    i = 1
-    for image in images:
-        ndvi = geo.computeNDVI(image)
-        geo.writeImageToFile("app/images/file" + str(i) + ".png", ndvi)
-        i = i + 1
+    image = geo.getImage(filters[0])
+    ndvi = geo.computeNDVI(image)
+    geo.writeImageToFile("app/images/file1.png", ndvi)

@@ -67,40 +67,27 @@ class Geospatial:
                     })
         return filters
         
-    def getImages(self, filters):
-        assert(type(filters) == type([]) )
-        assets = []
-        for fil in filters:
-            items = self.server.postSearchRequest(fil)
-            if(len(items) == 0):
-                raise Exception("No Items found for filter:\n" + json.dumps(fil, indent=2))
-            item = {}
-            for i in items:
-                if(len(i['_permissions']) != 0 ):
-                    item = i
-            asset = self.server.getAllAssets(item)['analytic']
-            assets.append(asset)
-            response = self.server.postActivationRequest(asset)
-            if(not(response.status_code == 204 or response.status_code == 202)):
-                raise Exception("Response Code: " + str(response.status_code) +"Could not activate asset:\n" + json.dumps(asset, indent=2))    
-        self.logger.debug("getImages Found Images for " + str(len(filters)) + " filters")
-        done = False
-        while(not done):
-            for asset in assets:
-                status = self.server.getActivationStatus(asset)
-                if(status == 'activating'):
-                    done = False
-                    break
-                else:
-                    done = True
-        self.logger.debug("getImages Activated Assets for " + str(len(filters)) + " filters")
-        images = []
-        for i in range(0, len(filters)):
-            coordinates = filters[i]['config'][0]['config']['coordinates']
-            images.append(self.server.downloadImage(assets[i], aoi = coordinates))
-            self.logger.debug("getImages Downloaded " + str(i+1) + " images")
-        self.logger.debug("getImages shape of image:" + str(images[0].shape))
-        return images
+    def getImage(self, fil):
+        items = self.server.postSearchRequest(fil)
+        if(len(items) == 0):
+            raise Exception("No Items found for filter:\n" + json.dumps(fil, indent=2))
+        item = {}
+        for i in items:
+            if(len(i['_permissions']) != 0 ):
+                item = i
+        asset = self.server.getAllAssets(item)['analytic']
+        response = self.server.postActivationRequest(asset)
+        if(not(response.status_code == 204 or response.status_code == 202)):
+            raise Exception("Response Code: " + str(response.status_code) +"Could not activate asset:\n" + json.dumps(asset, indent=2))    
+        status = 'activating'
+        while(status == 'activating'):
+            status = self.server.getActivationStatus(asset)
+        self.logger.debug("getImages Activated Asset")
+        coordinates = fil['config'][0]['config']['coordinates']
+        image = self.server.downloadImage(asset, aoi = coordinates)
+        self.logger.info("getImages Downloaded image")
+        self.logger.debug("getImages shape of image:" + str(image.shape))
+        return image
     '''
     image - A minimum takes a multispectral image of shape - [bands, height*, width*]
     For REOrthoTile

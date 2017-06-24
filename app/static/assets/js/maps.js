@@ -162,12 +162,15 @@ function initMap() {
         var neLatLng = new google.maps.LatLng({lat: nLat, lng: eLng});
         var bounds = new google.maps.LatLngBounds(swLatLng, neLatLng);
         map.fitBounds(bounds);
-        sendPolygon(path);
-        var srcImage = 'file1.png';
+        sendPolygon(path, function(){
+          var srcImage = 'file1.png';
+          overlay = new USGSOverlay(bounds, srcImage, map);
+        });
+        
         // The custom USGSOverlay object contains the USGS image,
         // the bounds of the image, and a reference to the map.
-        poll();
-        overlay = new USGSOverlay(bounds, srcImage, map);
+        //poll();
+        
     });
     
 }
@@ -183,13 +186,18 @@ function populateInfoWindow(marker, infoWindow){
     }        
 }
 */
-function sendPolygon(polygon) {
+function sendPolygon(polygon, callback) {
     var xhr = new XMLHttpRequest();
     var url = window.location.origin + "/polygon";
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-type", "application/json");
     var data = JSON.stringify({"polygon": polygon});
     console.log(data)
+    xhr.onreadystatechange = function() { 
+        if (xhr.readyState == 4 && xhr.status == 200)
+            console.log(xhr.responseText);
+            callback();
+    }
     xhr.send(data);
 }
 /*
