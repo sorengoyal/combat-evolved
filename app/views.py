@@ -27,7 +27,7 @@ def poll():
     response = {"status": 0}
     print(os.getcwd())
     try:
-        for i in range(1,5):
+        for i in range(1,2):
             open('app/images/file' + str(i) + '.png', 'r')
             response["status"] = response["status"] + 25
     except FileNotFoundError as err:
@@ -36,13 +36,13 @@ def poll():
     logger.debug("poll(): response sent - " + str(response["status"]))
     return jsonify(response)
 
-@app.route('/file1.png', methods=['GET'])
+@app.route('/file0.png', methods=['GET'])
 def getImage():
 #    if request.args.get('type') == '1':
 #       filename = 'ok.gif'
 #    else:
 #       filename = 'error.gif'
-    return send_file('images/file1.png', mimetype='image/png')
+    return send_file('images/file0.png', mimetype='image/png')
 
 @app.route('/graph.png', methods=['GET'])
 def getGraph():

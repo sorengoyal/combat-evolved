@@ -45,7 +45,7 @@ def ndviImages(coordinates):
     images = []
     masks = []
     maxvalue = 0
-    for i in range(0,4):
+    for i in range(0,1):
         image = geo.getImage(filters[i])
         ndvi, mask = geo.computeNDVI(image)
         graph.append(ndvi.sum()/mask.sum())
@@ -53,7 +53,7 @@ def ndviImages(coordinates):
         masks.append(mask)
         if(maxvalue < ndvi.max()):
             maxvalue = ndvi.max()
-    for i in range(0,4):
+    for i in range(0,1):
         image = images[i]
         mask = masks[i]
         for m in range(0,image.shape[0]):

@@ -166,7 +166,7 @@ function initMap() {
           var srcImage = 'file0.png';
           inner = document.getElementsByClassName("inner")[0];
           inf = document.getElementById("information");
-          inner.setAttribute("style", "width:30rem; height: 15rem");
+          inner.setAttribute("style", "width:30rem; height: 20rem");
           inf.innerHTML = "";
           var img = document.createElement('img');
           img.src = "graph.png";
