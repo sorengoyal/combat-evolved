@@ -10,7 +10,7 @@ logger = logging.getLogger("root."+ __name__)
 
 @app.route('/')
 def index():
-    return render_template('base.html', key = 'AIzaSyCdlOuxf56nB-hgN35Jpvk7qm7px-8wCPA')
+    return render_template('base.html', key = 'AIzaSyAbRZJg6qxBQ3q3Q4ojVuDYyTkOoxsIhxw')
 
 @app.route('/polygon', methods=['POST'])
 def receive():
@@ -43,3 +43,12 @@ def getImage():
 #    else:
 #       filename = 'error.gif'
     return send_file('images/file1.png', mimetype='image/png')
+
+@app.route('/graph.png', methods=['GET'])
+def getGraph():
+#    if request.args.get('type') == '1':
+#       filename = 'ok.gif'
+#    else:
+#       filename = 'error.gif'
+    return send_file('images/graph.png', mimetype='image/png')
+

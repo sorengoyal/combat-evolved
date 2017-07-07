@@ -83,10 +83,11 @@ class Geospatial:
         while(status == 'activating'):
             status = self.server.getActivationStatus(asset)
         self.logger.debug("getImages Activated Asset")
+        asset = self.server.getAllAssets(item)['analytic']
         coordinates = fil['config'][0]['config']['coordinates']
         image = self.server.downloadImage(asset, aoi = coordinates)
-        self.logger.info("getImages Downloaded image")
-        self.logger.debug("getImages shape of image:" + str(image.shape))
+        self.logger.info("getImage Downloaded image")
+        self.logger.debug("getImage shape of image:" + str(image.shape))
         return image
     '''
     image - A minimum takes a multispectral image of shape - [bands, height*, width*]
@@ -95,28 +96,15 @@ class Geospatial:
     def computeNDVI(self, image):
         image = image.astype(int)
         ndvi = np.empty((image.shape[1], image.shape[2]),dtype = float)
-        minimum = 100
-        for i in range(0,image.shape[1]):
-            for j in range(0,image.shape[2]):
-                if(image[4,i,j] + image[2,i,j] == 0):
-                    ndvi[i,j] = -100 #Non-Pixel marker\
-                else:
-                    ndvi[i,j] = (image[4,i,j] - image[2,i,j])/(image[4,i,j] + image[2,i,j])
-                    if(minimum > ndvi[i,j]):
-                        minimum = ndvi[i,j]
-        maximum = np.max(ndvi)
-        scale = (maximum - minimum)/255.0
         mask = np.ndarray(ndvi.shape)
         for i in range(0,image.shape[1]):
             for j in range(0,image.shape[2]):
-                if(ndvi[i,j] == -100):
+                if(image[4,i,j] + image[2,i,j] == 0):
                     ndvi[i,j] = 0 #Non-Pixel marker
                     mask[i,j] = 0
                 else:
-                    ndvi[i,j] = (ndvi[i,j]+minimum)/scale
-                    mask[i,j] = 0.8 #1 is full opaque, 0 is fully transparent
-        self.logger.debug("computeNDVI min value = " + str(minimum))
-        self.logger.debug("computeNDVI max value = " + str(maximum))
+                    ndvi[i,j] = (image[4,i,j] - image[2,i,j])/(image[4,i,j] + image[2,i,j])
+                    mask[i,j] = 1
         return (ndvi, mask)
 
     def getSeason(self, month):
@@ -195,7 +183,8 @@ class Geospatial:
         assert(len(image.shape) <= 3) #Maximum a 3D array
         if(len(image.shape) == 3): #Maximum of 3 colors
             image.shape[0] <=3
-        self.logger.info("writeImageToFile Image Shape " + str(image.shape))         
+        self.logger.info("writeImageToFile Image Shape " + str(image.shape))
+        self.logger.info("writeImageToFile Mask Shape " + str(mask.shape))         
         plt.imsave(fname = filename, arr = image, cmap = plt.get_cmap('Greens'))
         if(mask != None):
             image = plt.imread(filename)

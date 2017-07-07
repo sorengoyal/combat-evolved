@@ -110,7 +110,7 @@ function initMap() {
     var polygon;;
     //Constructor: Creates a new map. Only zoom and corrdinates a required
     map = new google.maps.Map(document.getElementById('map'),{
-            center: {lat:37.805749114187385, lng: -122.4270486831665,},
+            center: {lat:37.805749114187385, lng: -122.3170486831665,},
             zoom: 13,
             styles: style
     });
@@ -163,7 +163,17 @@ function initMap() {
         var bounds = new google.maps.LatLngBounds(swLatLng, neLatLng);
         map.fitBounds(bounds);
         sendPolygon(path, function(){
-          var srcImage = 'file1.png';
+          var srcImage = 'file0.png';
+          inner = document.getElementsByClassName("inner")[0];
+          inf = document.getElementById("information");
+          inner.setAttribute("style", "width:30rem; height: 15rem");
+          inf.innerHTML = "";
+          var img = document.createElement('img');
+          img.src = "graph.png";
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.position = 'relative';
+          inf.appendChild(img)
           overlay = new USGSOverlay(bounds, srcImage, map);
         });
         
