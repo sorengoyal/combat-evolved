@@ -1,5 +1,17 @@
-Readme
+Installation
+============
+Use conda. Don't use pip. pip does not have the correct gdal version.
+Execute these commands from the root directory of the project.
+
+  conda create --name test-env python=3.5.3
+  source activate test-env
+  conda install --file requirements.txt
+
+Run
 ======
 
 To run
-python run.py
+  python run.py
+
+Access the website from a webbrowser (Google Chrome preffered) at 127.0.0.1:5000
+

@@ -1,9 +1,9 @@
-numpy==1.13.0
-libtiff==0.4.0 or 4.0.6-3
-libgdal==2.1.0
-Flask==0.12.1
-Flask-WTF==0.14.2
-pysolr==3.6.0
-gunicorn==19.7.1
-WTForms==2.1
-gdal==2.2.0
+numpy
+libgdal
+Flask
+Flask-WTF
+gunicorn
+WTForms
+gdal
+rasterio
+matplotlib
