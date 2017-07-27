@@ -10,7 +10,7 @@ import os
 import requests
 import json
 import numpy as np
-from osgeo import gdal
+#from osgeo import gdal
 
 class Server:
     def __init__(self, api_key):
@@ -82,6 +82,7 @@ class Server:
   
     #TODO:Complete this and write a test for this method
     def downloadImage(self, asset, aoi = None, output_file = None):
+        self.logger.error("downloadImage Asset: This project has moved away from gdal so this methd will not work")
         self.logger.debug("downloadImage Asset:" + json.dumps(asset,indent=2))
         download_url = asset['location']
         if(aoi == None):
@@ -105,7 +106,7 @@ class Server:
             vsicurl_url = '/vsicurl/' + download_url
             output_file_name = 'temp.tif'
             # GDAL Warp crops the image by our AOI, and saves it
-            err = gdal.Warp(output_file_name, vsicurl_url, dstSRS = 'EPSG:4326', cutlineDSName = 'subarea.json', cropToCutline = True)
+            #err = gdal.Warp(output_file_name, vsicurl_url, dstSRS = 'EPSG:4326', cutlineDSName = 'subarea.json', cropToCutline = True)
             if(output_file == None):
                 os.remove(output_file_name)
             else:

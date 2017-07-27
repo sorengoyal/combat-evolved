@@ -12,9 +12,8 @@ import requests
 import json
 import time
 #from osgeo import gdal
-# our demo filter that filters by geometry, date and cloud cover
-from osgeo import gdal
-import rasterio
+#our demo filter that filters by geometry, date and cloud cover
+#from osgeo import gdal
 import numpy as np
 import matplotlib.pyplot as plt
 from app.plab.server import Server
