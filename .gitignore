@@ -5,3 +5,8 @@
 *.log
 worksheet.py
 subarea.json
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
